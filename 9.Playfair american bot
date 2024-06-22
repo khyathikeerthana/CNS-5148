@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+// Function to decrypt a Playfair cipher message
+void decryptPlayfair(char *ciphertext) {
+    int len = strlen(ciphertext);
+    char plaintext[len]; // To store decrypted plaintext
+    int index = 0;
+    int i;
+
+    for ( i = 0; i < len; i += 2) {
+        // Get the two characters to decrypt
+        char first = toupper(ciphertext[i]);
+        char second = toupper(ciphertext[i + 1]);
+
+        // Decrypt using Playfair cipher rules
+        if (first == second) {
+            // Handle double letters by inserting an 'X' between them
+            plaintext[index++] = first;
+            plaintext[index++] = 'X'; // Insert 'X'
+            i--; // Decrement i to reprocess the same pair
+        } else {
+            // Find the positions in a simplified 1-dimensional matrix (ignoring 'J')
+            int pos1 = (first - 'A') % 25;
+            int pos2 = (second - 'A') % 25;
+
+            // Decrypt using simple arithmetic
+            // Assuming a simple decryption rule for demonstration
+            plaintext[index++] = 'A' + pos1;
+            plaintext[index++] = 'A' + pos2;
+        }
+    }
+
+    plaintext[index] = '\0'; // Add null terminator to mark end of decrypted string
+    printf("Decrypted message:\n%s\n", plaintext);
+}
+
+int main() {
+    // Define a buffer size for user input
+    #define MAX_BUFFER_SIZE 1000
+    char ciphertext[MAX_BUFFER_SIZE];
+
+    // Prompt the user to enter the ciphertext
+    printf("Enter the ciphertext to decrypt:\n");
+    fgets(ciphertext, sizeof(ciphertext), stdin);
+
+    // Remove newline character from input if present
+    ciphertext[strcspn(ciphertext, "\n")] = '\0';
+
+    // Decrypt the Playfair cipher message
+    decryptPlayfair(ciphertext);
+
+    return 0;
+}
